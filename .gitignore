@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# Node & Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/dist/
+
+# Local Storage / Test Outputs
+storage/
+test_pack/
+audit.txt
+
+# Environment & IDE
+.env
+.vscode/
+.idea/

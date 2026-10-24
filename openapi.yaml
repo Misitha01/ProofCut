@@ -1,0 +1,948 @@
+openapi: 3.1.0
+info:
+  title: ProofCut API
+  description: ProofCut video editing API with deterministic timeline operations,
+    source-anchored captions, audio-edit metadata, history, persistence and video
+    rendering.
+  version: 0.6.0
+paths:
+  /api/v1/videos/upload:
+    post:
+      tags:
+      - Videos
+      summary: Upload Video
+      description: Upload a video, inspect it, and persist its metadata.
+      operationId: upload_video_api_v1_videos_upload_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_upload_video_api_v1_videos_upload_post'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/videos/:
+    get:
+      tags:
+      - Videos
+      summary: List Videos
+      description: List uploaded videos, including records restored from SQLite.
+      operationId: list_videos_api_v1_videos__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/videos/{video_id}:
+    get:
+      tags:
+      - Videos
+      summary: Get Video
+      description: Retrieve metadata for one uploaded video.
+      operationId: get_video_api_v1_videos__video_id__get
+      parameters:
+      - name: video_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Video Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/videos/{video_id}/file:
+    get:
+      tags:
+      - Videos
+      summary: Get Video File
+      description: Return the uploaded video for browser playback.
+      operationId: get_video_file_api_v1_videos__video_id__file_get
+      parameters:
+      - name: video_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Video Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/{timeline_id}/render:
+    post:
+      tags:
+      - Rendering
+      summary: Render Timeline
+      description: Start a render job and return without waiting for FFmpeg.
+      operationId: render_timeline_api_v1_timeline__timeline_id__render_post
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/jobs/{job_id}:
+    get:
+      tags:
+      - Rendering
+      summary: Get Render Job
+      description: Get the current status and result of a render job.
+      operationId: get_render_job_api_v1_jobs__job_id__get
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Job Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/renders:
+    get:
+      tags:
+      - Rendering
+      summary: List Renders
+      description: List render records currently available on disk.
+      operationId: list_renders_api_v1_renders_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/renders/{render_id}:
+    get:
+      tags:
+      - Rendering
+      summary: Download Render
+      description: Download a completed rendered video.
+      operationId: download_render_api_v1_renders__render_id__get
+      parameters:
+      - name: render_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Render Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/health:
+    get:
+      summary: Health
+      operationId: health_api_v1_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/ready:
+    get:
+      summary: Ready
+      operationId: ready_api_v1_ready_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/timeline/demo:
+    post:
+      summary: Create Demo
+      operationId: create_demo_api_v1_timeline_demo_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/timeline/from-video/{video_id}:
+    post:
+      summary: Create Timeline From Video
+      operationId: create_timeline_from_video_api_v1_timeline_from_video__video_id__post
+      parameters:
+      - name: video_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Video Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/{timeline_id}:
+    get:
+      summary: Get Timeline
+      operationId: get_timeline_api_v1_timeline__timeline_id__get
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/{timeline_id}/cut:
+    post:
+      summary: Cut Timeline
+      operationId: cut_timeline_api_v1_timeline__timeline_id__cut_post
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CutRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/{timeline_id}/keep:
+    post:
+      summary: Keep Timeline Range
+      operationId: keep_timeline_range_api_v1_timeline__timeline_id__keep_post
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeepRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/{timeline_id}/reorder:
+    post:
+      summary: Reorder Timeline
+      operationId: reorder_timeline_api_v1_timeline__timeline_id__reorder_post
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReorderRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/{timeline_id}/speed:
+    post:
+      summary: Change Timeline Speed
+      operationId: change_timeline_speed_api_v1_timeline__timeline_id__speed_post
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeedRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/{timeline_id}/captions:
+    post:
+      summary: Add Timeline Caption
+      operationId: add_timeline_caption_api_v1_timeline__timeline_id__captions_post
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaptionCreate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/{timeline_id}/captions/{caption_id}:
+    patch:
+      summary: Update Timeline Caption
+      operationId: update_timeline_caption_api_v1_timeline__timeline_id__captions__caption_id__patch
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      - name: caption_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Caption Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaptionUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      summary: Delete Timeline Caption
+      operationId: delete_timeline_caption_api_v1_timeline__timeline_id__captions__caption_id__delete
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      - name: caption_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Caption Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/{timeline_id}/audio-edits:
+    post:
+      summary: Add Audio Edit
+      operationId: add_audio_edit_api_v1_timeline__timeline_id__audio_edits_post
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AudioEditRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/{timeline_id}/audio-edits/{edit_id}:
+    delete:
+      summary: Delete Audio Edit
+      operationId: delete_audio_edit_api_v1_timeline__timeline_id__audio_edits__edit_id__delete
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      - name: edit_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Edit Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/{timeline_id}/music:
+    post:
+      summary: Set Timeline Music
+      operationId: set_timeline_music_api_v1_timeline__timeline_id__music_post
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MusicRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      summary: Remove Timeline Music
+      operationId: remove_timeline_music_api_v1_timeline__timeline_id__music_delete
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/instructions:
+    post:
+      summary: Edit Timeline
+      operationId: edit_timeline_api_v1_timeline_instructions_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Instruction'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/instructions:
+    post:
+      summary: Edit Timeline Alias
+      operationId: edit_timeline_alias_api_v1_instructions_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Instruction'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/undo:
+    post:
+      summary: Undo
+      operationId: undo_api_v1_timeline_undo_post
+      parameters:
+      - name: timeline_id
+        in: query
+        required: false
+        schema:
+          type: string
+          default: demo
+          title: Timeline Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/redo:
+    post:
+      summary: Redo
+      operationId: redo_api_v1_timeline_redo_post
+      parameters:
+      - name: timeline_id
+        in: query
+        required: false
+        schema:
+          type: string
+          default: demo
+          title: Timeline Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/timeline/{timeline_id}/restore:
+    post:
+      summary: Restore Timeline State
+      operationId: restore_timeline_state_api_v1_timeline__timeline_id__restore_post
+      parameters:
+      - name: timeline_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Timeline Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestoreRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    AudioEditRequest:
+      properties:
+        edit_id:
+          type: string
+          maxLength: 100
+          minLength: 1
+          title: Edit Id
+        action:
+          type: string
+          title: Action
+        start_s:
+          type: number
+          minimum: 0.0
+          title: Start S
+        end_s:
+          type: number
+          exclusiveMinimum: 0.0
+          title: End S
+        word:
+          type: string
+          title: Word
+          default: ''
+      type: object
+      required:
+      - edit_id
+      - action
+      - start_s
+      - end_s
+      title: AudioEditRequest
+    Body_upload_video_api_v1_videos_upload_post:
+      properties:
+        file:
+          type: string
+          contentMediaType: application/octet-stream
+          title: File
+      type: object
+      required:
+      - file
+      title: Body_upload_video_api_v1_videos_upload_post
+    CaptionCreate:
+      properties:
+        caption_id:
+          type: string
+          maxLength: 100
+          minLength: 1
+          title: Caption Id
+        text:
+          type: string
+          maxLength: 500
+          minLength: 1
+          title: Text
+        start_s:
+          type: number
+          minimum: 0.0
+          title: Start S
+        end_s:
+          type: number
+          exclusiveMinimum: 0.0
+          title: End S
+        color:
+          type: string
+          title: Color
+          default: '#FFFFFF'
+      type: object
+      required:
+      - caption_id
+      - text
+      - start_s
+      - end_s
+      title: CaptionCreate
+    CaptionUpdate:
+      properties:
+        text:
+          anyOf:
+          - type: string
+            maxLength: 500
+          - type: 'null'
+          title: Text
+        start_s:
+          anyOf:
+          - type: number
+            minimum: 0.0
+          - type: 'null'
+          title: Start S
+        end_s:
+          anyOf:
+          - type: number
+            exclusiveMinimum: 0.0
+          - type: 'null'
+          title: End S
+        color:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Color
+      type: object
+      title: CaptionUpdate
+    CutRequest:
+      properties:
+        start_s:
+          type: number
+          minimum: 0.0
+          title: Start S
+        end_s:
+          type: number
+          exclusiveMinimum: 0.0
+          title: End S
+      type: object
+      required:
+      - start_s
+      - end_s
+      title: CutRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Instruction:
+      properties:
+        instruction:
+          type: string
+          maxLength: 500
+          minLength: 1
+          title: Instruction
+        timeline_id:
+          type: string
+          title: Timeline Id
+          default: demo
+      type: object
+      required:
+      - instruction
+      title: Instruction
+    KeepRequest:
+      properties:
+        start_s:
+          type: number
+          minimum: 0.0
+          title: Start S
+        end_s:
+          type: number
+          exclusiveMinimum: 0.0
+          title: End S
+      type: object
+      required:
+      - start_s
+      - end_s
+      title: KeepRequest
+    MusicRequest:
+      properties:
+        file_path:
+          type: string
+          maxLength: 1000
+          minLength: 1
+          title: File Path
+        volume:
+          type: number
+          maximum: 1.0
+          minimum: 0.0
+          title: Volume
+          default: 0.15
+        ducking:
+          type: boolean
+          title: Ducking
+          default: true
+      type: object
+      required:
+      - file_path
+      title: MusicRequest
+    ReorderRequest:
+      properties:
+        ranges:
+          items:
+            items:
+              type: number
+            type: array
+          type: array
+          minItems: 1
+          title: Ranges
+      type: object
+      required:
+      - ranges
+      title: ReorderRequest
+    RestoreRequest:
+      properties:
+        state_index:
+          type: integer
+          minimum: 0.0
+          title: State Index
+      type: object
+      required:
+      - state_index
+      title: RestoreRequest
+    SpeedRequest:
+      properties:
+        start_s:
+          type: number
+          minimum: 0.0
+          title: Start S
+        end_s:
+          type: number
+          exclusiveMinimum: 0.0
+          title: End S
+        speed:
+          type: number
+          maximum: 16.0
+          exclusiveMinimum: 0.0
+          title: Speed
+      type: object
+      required:
+      - start_s
+      - end_s
+      - speed
+      title: SpeedRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
